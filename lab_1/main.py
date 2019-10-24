@@ -20,23 +20,26 @@ def read_from_file(path_to_file: str, lines_limit: int) -> str:
     :param lines_limit: <int> максиманьное число строк,которое берется из файла;ввод изначально
     :return:
     """
-    try:
-        file = open(path_to_file, 'r')
-    except Exception as error:
-        print('Ошибка в read_from_file: ', error)
-        return ''
-
-    result_text = ''
-    n_line = 1
-    for line in file:
-        if n_line > lines_limit:
-            return result_text
+    frequencies = {}
+    new_text = ''
+    if text is None:
+        return frequencies
+    if not isinstance(text, str):
+        text = str(text)
+    for symbol in text:
+        if symbol.isalpha() or symbol == ' ':
+            new_text += symbol
+    new_text = new_text.lower()
+    words = new_text.split()
+    for key in words:
+        key = key.lower()
+        if key in frequencies:
+            value = frequencies[key]
+            frequencies[key] = value + 1
         else:
-            result_text += line
-            n_line += 1
+            frequencies[key] = 1
+    return frequencies
 
-
-def calculate_frequences(text: str) -> dict:
 
     """
 
@@ -62,52 +65,63 @@ def calculate_frequences(text: str) -> dict:
 
 def filter_stop_words(frequencies: dict, stop_words: tuple) -> dict:
     """
-
-        :param frequencies: <dict> частота слов в тексте в виде словаря
-        :param stop_words: <tuple> запрещенные слова
-        :return: <dict> очищенный частотный словарь
-        """
-    for stop_word in stop_words:
-        if stop_word in frequencies.keys():
-            frequencies.pop(stop_word)
+    if frequencies is None:
+        frequencies = {}
+        return frequencies
+    for word in list(frequencies):
+        if not isinstance(word, str):
+            del frequencies[word]
+    if not isinstance(stop_words, tuple):
+        return frequencies
+    for word in stop_words:
+        if not isinstance(word, str):
+            continue
+        if frequencies.get(word) is not None:
+            del frequencies[word]
     return frequencies
 
 
-
 def get_top_n(frequencies: dict, top_n: int) -> tuple:
-    if top_n > len(frequencies):
-        print('В словаре меньше {} элементов'.format(top_n))
-        return ()
-
-    top_n_words = []
-    max_freq = 0
-    max_value = {}
-
-    for i in range(top_n):
-        for item in frequencies.items():
-            if item[1] > max_freq:
-                max_freq = item[1]
-                max_value = item
-        top_n_words.append(max_value)
-        frequencies.pop(max_value[0])
-        max_freq = 0
-        max_value = ()
-
-    return tuple(top_n_words)
+    """
+    Takes first N popular words
+    :param
+    """
+    if not isinstance(top_n, int):
+        frequencies = ()
+        return frequencies
+    if top_n < 0:
+        top_n = 0
+    elif top_n > len(frequencies):
+        top_n = len(frequencies)
+    top_words = sorted(frequencies, key=lambda x: int(frequencies[x]), reverse=True)
+    best = tuple(top_words[:top_n])
+    return best
 
 
-if __name__ == '__main__':
+def read_from_file(path_to_file: str, lines_limit: int) -> str:
+    """
+    Read text from file
+    """
+    file = open(path_to_file)
+    counter = 0
+    text = ''
+    if file is None:
+        return text
+    for line in file:
+        text += line
+        counter += 1
+        if counter == lines_limit:
+            break
+    file.close()
+    return text
 
-    text = read_from_file(path_to_file='data.txt', lines_limit=4)
-    print(text)
-    res = calculate_frequences(text=text)
-    print(res)
-    res = filter_stop_words(res, stop_words=stop_words)
-    print(res)
-    res = get_top_n(res, top_n = 5)
-    print(res)
 
-
-
-
-
+def write_to_file(path_to_file: str, content: tuple):
+    """
+    Creates new file
+    """
+    file = open(path_to_file, 'w')
+    for i in content:
+        file.write(i)
+        file.write('\n')
+    file.close()
