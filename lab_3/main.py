@@ -59,7 +59,6 @@ class NGramTrie:
 
         """
         error = 'ERROR'
-        
 
         if sentence is not None and isinstance(sentence, tuple):
             if len(sentence) < self.size:
@@ -79,7 +78,6 @@ class NGramTrie:
                 end_position += 1
 
             return self.gram_freqencies
-
 
     def calculate_log_probabilities(self):
         for gram in self.gram_freqencies:
@@ -119,9 +117,7 @@ class NGramTrie:
         return []
 
 
-
-
-def encode (storage_instance, corpus) -> list:
+def encode(storage_instance, corpus) -> list:
     cipher = []
     for sentence in corpus:
         pre_list = []
@@ -191,12 +187,12 @@ if __name__ == '__main__':
         print(WS.get_id_of('i'))
         for el in encoded_sentences:
             res = NGR.fill_from_sentence(tuple(el))
-        print(res)
+        #print(res)
         print(len(NGR.gram_freqencies))
         res = NGR.calculate_log_probabilities()
         print(res)
 
-        sentence = NGR.predict_next_sentence((175, 623))
+        sentence = NGR.predict_next_sentence((0, 1))
         print()
         print(sentence)
         for id_of_word in sentence:
