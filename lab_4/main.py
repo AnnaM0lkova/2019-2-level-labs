@@ -13,6 +13,7 @@ def clean_tokenize_corpus(texts: list) -> list:
         if one_text and isinstance(one_text, str):
             one_text = one_text.replace('?',".")
             one_text = one_text.replace('!',".")
+            #несколько условий в цикле можно?
             for i in signs:
                 one_text = one_text.replace(i," ")
             while "  " in one_text:
@@ -44,12 +45,36 @@ class TfIdfCalculator:
         self.tf_values = []
         self.idf_values = {}
         self.tf_idf_values = []
-        pass
+
 
     def calculate_tf(self):
-        pass
+        if not isinstance(self.corpus, list):
+            return
+        for one_text in self.corpus:
+            if not isinstance(one_text,list):
+                continue
+            words = len(one_text)
+            for word in one_text:
+                if type(word) != str:
+                    words -= 1
+            tf_storage = {}
+            for word in one_text:
+                if type(word) != str:
+                    continue
+                if word not in tf_storage:
+                    tf_storage[word] = one_text.count(word)/words
+            self.tf_values.append(tf_storage)
+                    pass
+
 
     def calculate_idf(self):
+        if not isinstance(self.corpus, list):
+            return
+        all_words = len(self.corpus)
+        for one_text in self.corpus:
+            if not
+
+        pass
         pass
 
     def calculate(self):
