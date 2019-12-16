@@ -72,10 +72,19 @@ class TfIdfCalculator:
             return
         all_words = len(self.corpus)
         for one_text in self.corpus:
-            if not
-
-        pass
-        pass
+            if type(one_text) != list:
+                continue
+            for word in one_text:
+                if type(word) != str:
+                    continue
+                if word in self.corpus:
+                    continue
+                all_appear = 0
+                for one_text in self.corpus:
+                    if word in one_text:
+                        all_appear += 1
+                    self.idf_values[word] = log(all_words / all_appear)
+       pass
 
     def calculate(self):
         pass
