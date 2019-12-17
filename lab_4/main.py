@@ -5,6 +5,7 @@ REFERENCE_TEXTS = []
 
 
 def clean_tokenize_corpus(_texts: list) -> list:
+    pass
     if not _texts or not isinstance(_texts, list):
         return []
     clean_corpus = []
@@ -35,7 +36,6 @@ def clean_tokenize_corpus(_texts: list) -> list:
                     clean_token_text.append(word.lower())
             clean_corpus += [clean_token_text]
     return clean_corpus
-    pass
 
 
 class TfIdfCalculator:
@@ -104,7 +104,8 @@ class TfIdfCalculator:
                 words_in_text = sorted(current_text, key=current_text.get, reverse=True)
                 position = words_in_text.index(word)
                 return current_text[word], position
-        return ()
+        else:
+            return ()
 
 
 if __name__ == '__main__':
@@ -120,6 +121,8 @@ if __name__ == '__main__':
     print(tf_idf.calculate_idf())
     print(tf_idf.calculate())
     print(tf_idf.report_on('good', 0))
+    print(tf_idf.report_on('and', 1))
+
     '''
     test_texts = clean_tokenize_corpus(REFERENCE_TEXTS)
     tf_idf = TfIdfCalculator(test_texts)
