@@ -1,27 +1,26 @@
-import math
+from math import log
 
 
 REFERENCE_TEXTS = []
 
 
-def clean_tokenize_corpus(texts: list) -> list:
-    if not texts or not isinstance(texts, list):
+def clean_tokenize_corpus(_texts: list) -> list:
+    if not _texts or not isinstance(texts, list):
         return []
     clean_corpus = []
-    signs = [',', '-', '—', '«', '»', ':', ';', '"', "'", "#", "$", '(', ')', '&']
-    for one_text in texts:
+    signs = [',', '-', '—', '«', '»', ':', ';', '"', "'", "#", "$", '(', ')', '&', '/']
+    for one_text in _texts:
         if one_text and isinstance(one_text, str):
-            one_text = one_text.replace('?',".")
-            one_text = one_text.replace('!',".")
-            #несколько условий в цикле можно?
+            one_text = one_text.replace('?', ".")
+            one_text = one_text.replace('!', ".")
             for i in signs:
-                one_text = one_text.replace(i," ")
+                one_text = one_text.replace(i, " ")
             while "  " in one_text:
-                one_text = one_text.replace("  "," ")
+                one_text = one_text.replace("  ", " ")
             while '<\n>' in one_text:
                 one_text = one_text.replace("<\n/>", " ")
-            while '<br />' in one_text:
-                one_text = one_text.replace("<br />", " ")
+            while '<br >' in one_text:
+                one_text = one_text.replace("<br >", " ")
             clean_token_text = []
             words = one_text.split(" ")
             for word in words:
@@ -46,12 +45,12 @@ class TfIdfCalculator:
         self.idf_values = {}
         self.tf_idf_values = []
 
-
     def calculate_tf(self):
+        pass
         if not isinstance(self.corpus, list):
-            return
+            return []
         for one_text in self.corpus:
-            if not isinstance(one_text,list):
+            if not isinstance(one_text, list):
                 continue
             words = len(one_text)
             for word in one_text:
@@ -64,33 +63,48 @@ class TfIdfCalculator:
                 if word not in tf_storage:
                     tf_storage[word] = one_text.count(word)/words
             self.tf_values.append(tf_storage)
-                    pass
 
+        return self.tf_values
 
     def calculate_idf(self):
+        pass
         if not isinstance(self.corpus, list):
-            return
-        all_words = len(self.corpus)
+            return {}
+        all_texts = len(self.corpus)
         for one_text in self.corpus:
             if type(one_text) != list:
                 continue
             for word in one_text:
                 if type(word) != str:
                     continue
-                if word in self.corpus:
-                    continue
-                all_appear = 0
-                for one_text in self.corpus:
-                    if word in one_text:
-                        all_appear += 1
-                    self.idf_values[word] = log(all_words / all_appear)
-       pass
+                word_appear_in_all_texts = 0
+                for text_ in self.corpus:
+                    if word in text_:
+                        word_appear_in_all_texts += 1
+                self.idf_values[word] = log(all_texts / word_appear_in_all_texts)
+        return self.idf_values
 
     def calculate(self):
         pass
+        if type(self.idf_values) and type(self.tf_values) != list:
+            return []
+        for element in self.tf_values:
+            words_tf_idf = {}
+            for word, tf_value in element.items():
+                words_tf_idf[word] = tf_value * self.idf_values.get(word)
+            self.tf_idf_values.append(words_tf_idf)
+
+        return self.tf_idf_values
 
     def report_on(self, word, document_index):
         pass
+        if self.tf_idf_values and document_index <= len(self.tf_idf_values):
+            current_text = self.tf_idf_values[document_index]
+            if word in current_text:
+                words_in_text = sorted(current_text, key=current_text.get, reverse=True)
+                position = words_in_text.index(word)
+                return current_text[word], position
+        return ()
 
 
 if __name__ == '__main__':
@@ -101,6 +115,11 @@ if __name__ == '__main__':
     # scenario to check your work
     test_texts = clean_tokenize_corpus(REFERENCE_TEXTS)
     print(test_texts)
+    tf_idf = TfIdfCalculator(test_texts)
+    print(tf_idf.calculate_tf())
+    print(tf_idf.calculate_idf())
+    print(tf_idf.calculate())
+    print(tf_idf.report_on('good', 0))
     '''
     test_texts = clean_tokenize_corpus(REFERENCE_TEXTS)
     tf_idf = TfIdfCalculator(test_texts)
@@ -109,4 +128,5 @@ if __name__ == '__main__':
     tf_idf.calculate()
     print(tf_idf.report_on('good', 0))
     print(tf_idf.report_on('and', 1))
-    '''
+'''
+
