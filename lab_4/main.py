@@ -5,7 +5,7 @@ REFERENCE_TEXTS = []
 
 
 def clean_tokenize_corpus(_texts: list) -> list:
-    if not _texts or not isinstance(texts, list):
+    if not _texts or not isinstance(_texts, list):
         return []
     clean_corpus = []
     signs = [',', '-', '—', '«', '»', ':', ';', '"', "'", "#", "$", '(', ')', '&', '/']
